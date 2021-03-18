@@ -32,7 +32,7 @@ func check() error {
 // Connect to db
 func Connect() error {
 
-	clientOptions := options.Client().ApplyURI("mongodb://root:Cool199462@localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://mongodb-service:27017/?directConnection=true&serverSelectionTimeoutMS=2000")
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	mongoClient.client = *client

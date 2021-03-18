@@ -129,7 +129,7 @@ function createApolloClient(initialState = {}) {
   return new ApolloClient({
     ssrMode: typeof window === "undefined", // Disables forceFetch on the server (so queries are only run once)
     link: new HttpLink({
-      uri: "http://192.168.0.123:8001/query", // Server URL (must be absolute)
+      uri: "http://192.168.1.248:30233/query", // Server URL (must be absolute)
       credentials: "same-origin",
       headers: { Authorization: getToken() },
       fetch,
