@@ -15,5 +15,5 @@ srv_gql_gen:
 	cd server && go run github.com/99designs/gqlgen generate
 
 srv_gql_done:
-	cd server && go generate ./...
+	cd server && go run github.com/99designs/gqlgen init && go run github.com/99designs/gqlgen generate && go generate ./...
 

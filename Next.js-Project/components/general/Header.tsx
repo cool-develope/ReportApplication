@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect, useState } from 'react'
 import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
@@ -54,6 +55,10 @@ export default function Header(props: React.PropsWithChildren<MyProps>) {
 
   const [_logout, { loading, error }] = useMutation(LOGOUT_USER);
 
+  const [username, setUsername] = useState('');
+
+  useEffect(() => setUsername(getUserName()))
+
   const handleLogout = () => {
     const username = getUserName();
     _logout({
@@ -84,12 +89,12 @@ export default function Header(props: React.PropsWithChildren<MyProps>) {
           noWrap
           className={classes.toolbarTitle}
         >
-          {title}
+          {title||"Blog"}
         </Typography>
         {isLogin() ? (
           <div>
             <Button variant="text" onClick={handleLogout}>
-              <i>{getUserName()}</i>
+              <i>{username}</i>
               <b>&nbsp;&nbsp;Logout</b>
             </Button>
           </div>

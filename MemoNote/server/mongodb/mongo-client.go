@@ -2,7 +2,7 @@ package mongodb
 
 import (
 	"context"
-	"log"
+	"memo-note/lib/logging"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -21,7 +21,7 @@ func check() error {
 	if err != nil {
 		errr := Connect()
 		if errr != nil {
-			log.Fatal(errr)
+			logging.Error(errr.Error())
 			return errr
 		}
 	}
@@ -32,13 +32,17 @@ func check() error {
 // Connect to db
 func Connect() error {
 
-	clientOptions := options.Client().ApplyURI("mongodb://mongodb-service:27017/?directConnection=true&serverSelectionTimeoutMS=2000")
+	clientOptions := options.Client().ApplyURI("mongodb://mongodb-service.mongo:27017/?replicaSet=MainRepSet&connect=direct&serverSelectionTimeoutMS=2000")
+
+	if clientOptions.Validate() != nil {
+		logging.Error(clientOptions.Validate().Error())
+	}
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	mongoClient.client = *client
 
 	if err != nil {
-		log.Fatal(err)
+		logging.Error(err.Error())
 		return err
 	}
 
@@ -52,7 +56,7 @@ func DisConnect() error {
 	err := mongoClient.client.Disconnect(context.TODO())
 
 	if err != nil {
-		log.Fatal(err)
+		logging.Error(err.Error())
 		return err
 	}
 
@@ -67,7 +71,7 @@ func Insert(channel string, documents []interface{}) (*mongo.InsertManyResult, e
 	results, err := collection.InsertMany(context.TODO(), documents)
 
 	if err != nil {
-		log.Fatal(err)
+		logging.Error(err.Error())
 		return nil, err
 	}
 
@@ -82,7 +86,7 @@ func Find(channel string, filter interface{}, opts ...*options.FindOptions) (*mo
 	results, err := collection.Find(context.TODO(), filter, opts...)
 
 	if err != nil {
-		log.Fatal(err)
+		logging.Error(err.Error())
 		return nil, err
 	}
 
@@ -97,7 +101,7 @@ func Update(channel string, filter interface{}, update interface{}, opts ...*opt
 	results, err := collection.UpdateMany(context.TODO(), filter, update, opts...)
 
 	if err != nil {
-		log.Fatal(err)
+		logging.Error(err.Error())
 		return nil, err
 	}
 
@@ -112,7 +116,7 @@ func Delete(channel string, filter interface{}, opts ...*options.DeleteOptions) 
 	results, err := collection.DeleteMany(context.TODO(), filter, opts...)
 
 	if err != nil {
-		log.Fatal(err)
+		logging.Error(err.Error())
 		return &mongo.DeleteResult{}, err
 	}
 
@@ -129,6 +133,10 @@ func CreateIndex(channel string, index interface{}, opts *options.IndexOptions) 
 		Options: opts,
 	}
 	ind, err := collection.Indexes().CreateOne(context.TODO(), mod)
+
+	if err != nil {
+		logging.Error(err.Error())
+	}
 
 	return ind, err
 }

@@ -9,4 +9,9 @@ COPY ./go.mod .
 RUN go mod download
 
 COPY . .
+
+# RUN go run github.com/99designs/gqlgen init
+# RUN go run github.com/99designs/gqlgen generate
+# RUN go generate ./...
+
 CMD ["go", "run", "server.go"]

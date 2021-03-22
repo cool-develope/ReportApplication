@@ -11,6 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import { withApollo } from "../../lib/apollo";
 import { getBaseID, logout } from "../../lib/auth";
+import { getTitle } from "../../lib/store";
 import Link from "@material-ui/core/Link";
 
 const GET_BLOGS = gql`
@@ -73,10 +74,16 @@ const BlogPage = () => {
     username: "",
   });
   const [update, setUpdate] = useState(0);
+  const [title, setTitle] = useState('');
+
+  useEffect(() => {
+    setTitle(getTitle(router.query.section[0]));
+  });
 
   const queryBlog = useQuery(GET_BLOG, {
     variables: { id: getBaseID(router.query.section[1]) },
   });
+
   const queryBlogs = useQuery(GET_BLOGS, {
     variables: { section: router.query.section[0] },
   });
@@ -114,7 +121,7 @@ const BlogPage = () => {
   return (
     <React.Fragment>
       <Container maxWidth="lg">
-        <Header title="Blog" visibleSection={true} />
+        <Header title={title}  visibleSection={true} />
 
         {loading && <p>Loading...</p>}
         {error && <p>{error.message.split(":")[1]}</p>}
